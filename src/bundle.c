@@ -864,6 +864,9 @@ gboolean check_bundle(const gchar *bundlename, RaucBundle **bundle, CheckBundleP
 			goto out;
 		}
 
+		if (params & CHECK_BUNDLE_NO_CHECK_TIME)
+			X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_NO_CHECK_TIME);
+
 		X509_STORE_set1_param(store, param);
 		X509_VERIFY_PARAM_free(param);
 
