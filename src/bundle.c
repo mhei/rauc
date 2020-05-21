@@ -856,12 +856,16 @@ gboolean check_bundle(const gchar *bundlename, RaucBundle **bundle, CheckBundleP
 
 	if (verify) {
 		CMS_ContentInfo *cms = NULL;
+		X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
 		X509_STORE *store = setup_x509_store(NULL, NULL, &ierror);
 		if (!store) {
 			g_propagate_error(error, ierror);
 			res = FALSE;
 			goto out;
 		}
+
+		X509_STORE_set1_param(store, param);
+		X509_VERIFY_PARAM_free(param);
 
 		g_message("Verifying bundle... ");
 		/* the squashfs image size is in offset */
