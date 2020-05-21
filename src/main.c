@@ -463,6 +463,7 @@ out:
 G_GNUC_UNUSED
 static gboolean resign_start(int argc, char **argv)
 {
+	CheckBundleParams check_bundle_params = CHECK_BUNDLE_DEFAULT;
 	g_autoptr(RaucBundle) bundle = NULL;
 	GError *ierror = NULL;
 	g_debug("resign start");
@@ -493,7 +494,10 @@ static gboolean resign_start(int argc, char **argv)
 		goto out;
 	}
 
-	if (!check_bundle(argv[2], &bundle, !verification_disabled, &ierror)) {
+	if (verification_disabled)
+		check_bundle_params |= CHECK_BUNDLE_NO_VERIFY;
+
+	if (!check_bundle(argv[2], &bundle, check_bundle_params, &ierror)) {
 		g_printerr("%s\n", ierror->message);
 		g_clear_error(&ierror);
 		r_exit_status = 1;
@@ -538,7 +542,7 @@ static gboolean extract_start(int argc, char **argv)
 	g_debug("input bundle: %s", argv[2]);
 	g_debug("output dir: %s", argv[3]);
 
-	if (!check_bundle(argv[2], &bundle, TRUE, &ierror)) {
+	if (!check_bundle(argv[2], &bundle, CHECK_BUNDLE_DEFAULT, &ierror)) {
 		g_printerr("%s\n", ierror->message);
 		g_clear_error(&ierror);
 		r_exit_status = 1;
@@ -591,7 +595,7 @@ static gboolean convert_start(int argc, char **argv)
 	g_debug("input bundle: %s", argv[2]);
 	g_debug("output bundle: %s", argv[3]);
 
-	if (!check_bundle(argv[2], &bundle, TRUE, &ierror)) {
+	if (!check_bundle(argv[2], &bundle, CHECK_BUNDLE_DEFAULT, &ierror)) {
 		g_printerr("%s\n", ierror->message);
 		g_clear_error(&ierror);
 		r_exit_status = 1;
@@ -867,6 +871,7 @@ static gboolean info_start(int argc, char **argv)
 	gboolean res = FALSE;
 	gchar* (*formatter)(RaucManifest *manifest) = NULL;
 	gchar *text;
+	CheckBundleParams check_bundle_params = CHECK_BUNDLE_DEFAULT;
 
 	if (argc < 3) {
 		g_printerr("A file name must be provided\n");
@@ -908,7 +913,10 @@ static gboolean info_start(int argc, char **argv)
 		goto out;
 	g_debug("input bundle: %s", bundlelocation);
 
-	res = check_bundle(bundlelocation, &bundle, !verification_disabled, &error);
+	if (verification_disabled)
+		check_bundle_params |= CHECK_BUNDLE_NO_VERIFY;
+
+	res = check_bundle(bundlelocation, &bundle, check_bundle_params, &error);
 	if (!res) {
 		g_printerr("%s\n", error->message);
 		g_clear_error(&error);

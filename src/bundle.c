@@ -707,7 +707,7 @@ static gboolean is_remote_scheme(const gchar *scheme)
 	       (g_strcmp0(scheme, "ftp") == 0);
 }
 
-gboolean check_bundle(const gchar *bundlename, RaucBundle **bundle, gboolean verify, GError **error)
+gboolean check_bundle(const gchar *bundlename, RaucBundle **bundle, CheckBundleParams params, GError **error)
 {
 	GError *ierror = NULL;
 	g_autoptr(GFile) bundlefile = NULL;
@@ -717,6 +717,7 @@ gboolean check_bundle(const gchar *bundlename, RaucBundle **bundle, gboolean ver
 	gboolean res = FALSE;
 	g_autoptr(RaucBundle) ibundle = g_new0(RaucBundle, 1);
 	gchar *bundlescheme = NULL;
+	gboolean verify = !(params & CHECK_BUNDLE_NO_VERIFY);
 
 	g_return_val_if_fail(bundle == NULL || *bundle == NULL, FALSE);
 
