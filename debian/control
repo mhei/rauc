@@ -1,0 +1,33 @@
+Source: rauc
+Section: admin
+Priority: optional
+Maintainer: Michael Heimpold <mhei@heimpold.de>
+Build-Depends:
+ debhelper (>= 9),
+ dh-autoreconf,
+ pkg-config,
+ libtool,
+ libglib2.0-dev,
+ libssl-dev (>= 1.1.1),
+ libcurl4-openssl-dev | libcurl-dev,
+ libjson-glib-dev,
+ libdbus-1-dev,
+ systemd,
+ zlib1g-dev,
+Standards-Version: 3.9.8
+Homepage: https://github.com/rauc/rauc
+
+Package: rauc
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ dbus,
+ systemd,
+ squashfs-tools,
+ u-boot-tools,
+Description: Safe and secure software updates for embedded Linux
+ RAUC is a lightweight update client that runs on your Embedded Linux device
+ and reliably controls the procedure of updating your device with a new
+ firmware revision. RAUC is also the tool on your host system that lets you
+ create, inspect and modify update artifacts for your device.
